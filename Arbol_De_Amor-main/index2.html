@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuestro Universo</title>
+<style>
+  html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    min-height:100vh;
+    overflow-x:hidden;
+    background:radial-gradient(ellipse at bottom, #0a0f1a 0%, #000 100%);
+    color:#fff;
+    font-family:'Segoe UI',sans-serif;
+    transition: transform 0.8s ease, opacity 0.8s ease; /* transición global */
+  }
+
+  /* Estado de salida */
+  body.slide-out {
+    transform: translateX(-100%); /* se desliza hacia la izquierda */
+    opacity: 0;
+  }
+
+  .btn{
+    margin-top:33px;
+    padding:12px 30px;
+    font-size:1.2rem;
+    background:#ffda44;
+    color:#000;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+    box-shadow:0 0 10px rgba(255,218,68,0.7);
+    transition:background 0.3s;
+  }
+  .btn:hover{background:#ffe77d;}
+
+  /* Botón de música */
+  #music-btn{
+    position:fixed;
+    bottom:18px;
+    right:18px;
+    z-index:99;
+    background:rgba(255,255,255,0.85);
+    border:none;
+    border-radius:24px;
+    padding:10px 18px;
+    font-size:1.1em;
+    cursor:pointer;
+  }
+
+  /* Estrellas */
+  .star{position:absolute;background:white;border-radius:50%;opacity:0.8;
+    animation:twinkle 2s infinite alternate;}
+  @keyframes twinkle{from{opacity:0.2;}to{opacity:1;}}
+
+  /* Estrellas fugaces */
+  .shooting{position:absolute;width:2px;height:2px;background:transparent;
+    box-shadow:0 0 6px 3px rgba(255,255,255,0.8);border-radius:50%;opacity:0;
+    animation:shoot 5s linear forwards;}
+  @keyframes shoot{0%{transform:translate(0,0);opacity:0;}
+    10%{opacity:1;}100%{transform:translate(600px,600px);opacity:0;}}
+
+  /* Corazones fugaces */
+  .heart{position:absolute;font-size:18px;color:#ffd700;opacity:0;
+    animation:heartMove 5s linear forwards;text-shadow:0 0 6px rgba(255,215,0,0.8);}
+  @keyframes heartMove{0%{transform:translate(0,0) rotate(0deg);opacity:0;}
+    10%{opacity:1;}100%{transform:translate(400px,400px) rotate(360deg);opacity:0;}}
+
+  .content{position:relative;z-index:10;max-width:1200px;margin:0 auto;
+    padding:60px 20px;text-align:center;}
+  h1{font-size:2.8em;margin-bottom:20px;
+    text-shadow:0 0 12px rgba(255,255,255,0.6);}
+  .description{max-width:800px;margin:0 auto 50px;font-size:1.2em;
+    line-height:1.6;color:#eee;}
+
+  .photos{position:relative;display:flex;justify-content:center;flex-wrap:wrap;gap:40px;}
+  .photo{position:relative;width:260px;height:180px;border-radius:12px;overflow:hidden;
+    box-shadow:0 6px 18px rgba(0,0,0,0.6);
+    transform:rotate(var(--rot)) scale(1);transition:transform 0.4s;cursor:pointer;}
+  .photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .photo:hover{transform:rotate(0deg) scale(1.05);z-index:20;}
+
+  @media(max-width:900px){
+    h1{font-size:2.2em;}
+    .photo{width:80%;height:200px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="content">
+  <h1>TUS OJOS MIS ESTRELLAS✨</h1>
+  <p class="description">
+    Tantas estrellas en el universo y las encuentro todas en tus ojos
+  </p>
+  <div class="photos">
+    <div class="photo" style="--rot:-6deg;">
+      <img src="Img/estrella.jpg" alt="Foto 1">
+    </div>
+    <div class="photo" style="--rot:5deg;">
+      <img src="Img/ojos1.jpg" alt="Foto 2">
+    </div>
+    <div class="photo" style="--rot:-4deg;">
+      <img src="Img/ojos3.jpg" alt="Foto 3">
+    </div>
+    <div class="photo" style="--rot:7deg;">
+      <img src="Img/estrella.jpg" alt="Foto 4">
+    </div>
+    <button class="btn" id="nextBtn">Siguiente</button>
+  </div>
+</div>
+
+<!-- Música -->
+<audio id="bg-music" src="Music/cuco.org.mp3" preload="auto"></audio>
+<button id="music-btn">Aquí tmb ▶</button>
+
+<script>
+/* === Estrellas === */
+const numStars = 180;
+for(let i=0;i<numStars;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const size=Math.random()*2.2;
+  s.style.width=size+'px';
+  s.style.height=size+'px';
+  s.style.top=Math.random()*100+'%';
+  s.style.left=Math.random()*100+'%';
+  s.style.animationDuration=(Math.random()*2+1)+'s';
+  document.body.appendChild(s);
+}
+
+/* Estrellas fugaces */
+function createShootingStar(){
+  const star=document.createElement('div');
+  star.className='shooting';
+  star.style.top=Math.random()*50+'%';
+  star.style.left=Math.random()*50+'%';
+  star.style.animationDuration=(Math.random()*3+3)+'s';
+  document.body.appendChild(star);
+  setTimeout(()=>star.remove(),5000);
+}
+setInterval(createShootingStar,2000);
+
+/* Corazones fugaces */
+function createHeart(){
+  const heart=document.createElement('div');
+  heart.className='heart';
+  heart.textContent='💛';
+  heart.style.top=Math.random()*60+'%';
+  heart.style.left=Math.random()*60+'%';
+  heart.style.fontSize=(Math.random()*10+16)+'px';
+  heart.style.animationDuration=(Math.random()*3+3)+'s';
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),5000);
+}
+setInterval(createHeart,2500);
+
+/* Música */
+const musicBtn = document.getElementById('music-btn');
+const audio = document.getElementById('bg-music');
+musicBtn.onclick = () => {
+  if (audio.paused) {
+    audio.play();
+    musicBtn.textContent = '🔊 Música';
+  } else {
+    audio.pause();
+    musicBtn.textContent = '▶️ Música';
+  }
+};
+
+/* Animación de salida al pasar de página */
+document.getElementById('nextBtn').addEventListener('click', () => {
+  document.body.classList.add('slide-out'); // activa la clase de salida
+  setTimeout(() => {
+    window.location.href = 'index3.html';   // redirige después de la animación
+  }, 800); // coincide con la duración de transition en CSS (0.8s)
+});
+</script>
+
+</body>
+</html>

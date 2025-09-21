@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Árbol de Amor</title>
+<style>
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #0f0f0f, #1b1b1b);
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    max-width: 1000px;
+    width: 100%;
+  }
+  .text-box {
+    flex: 1;
+    color: #ffffff;
+    font-size: 1.1em;
+    line-height: 1.6;
+    white-space: pre-line;
+    max-width: 400px;
+    min-height: 280px;
+    position: relative;
+  }
+  .tree-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .tree-container svg {
+    width: 280px;
+    height: auto;
+    animation: beat 1.5s infinite;
+  }
+  @keyframes beat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  .counters {
+    margin-top: 20px;
+    color: #e6e6e6;
+    font-size: 1em;
+    line-height: 1.4;
+  }
+  #music-btn {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    z-index: 99;
+    background: rgba(255,255,255,0.1);
+    color: #ffffff;
+    border: 1px solid #ffffff44;
+    border-radius: 24px;
+    padding: 10px 18px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  #music-btn:hover {
+    background: rgba(255,255,255,0.2);
+  }
+  #next-btn {
+    display: none;
+    margin-top: 25px;
+    padding: 10px 20px;
+    background: #c1321f;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.05em;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  #next-btn:hover {
+    background: #a62817;
+  }
+  @media(max-width: 700px){
+    .container { flex-direction: column-reverse; gap: 20px; }
+    .text-box { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Texto con typing + contadores -->
+  <div class="text-box">
+    <div id="typing"></div>
+    <div class="counters" id="counters"></div>
+    <button id="next-btn">Siguiente ➜</button>
+  </div>
+
+  <!-- Corazón grande -->
+  <div class="tree-container">
+    <svg viewBox="0 0 512 512" fill="#FC6F58">
+      <path d="M471.7 73.9c-54.5-46.4-136-38.3-186.4 13.7L256 116.2l-29.3-28.6C176.4 35.6 94.8 27.5 40.3 73.9
+      -21.4 126.8-13.1 229.4 43 285.6l175.4 175.4c20.9 20.9 54.8 20.9 75.7 0L469 285.6c56.1-56.2 64.4-158.8
+      2.7-211.7z"/>
+    </svg>
+  </div>
+</div>
+
+<audio id="bg-music" src="Music/franky style - por ti.mp3" preload="auto"></audio>
+<button id="music-btn">Presiona aquí 😾▶</button>
+
+<script>
+  // --- CONFIGURACIÓN ---
+  const startDate = new Date("2023-12-28T00:00:00"); // Fecha de inicio juntos
+  const eventDate = new Date("2023-08-03T00:00:00"); // Próximo aniversario
+
+  const text = `X TI:\n
+  Por ti
+Me doy la vuelta al mundo
+Ya sabes que es por ti
+Robaría un banco para hacerte feliz\n
+Haría lo que fuera
+Menos dejar la weed
+Me dice que estoy loco
+Yo te digo por ti\n
+Teamo muxo miamor\n
+Crees q llevamos este tiempo juntos? por mas q tuvimos alejados los dias para mi siguio contando ya q jamas t saque de mi corazon`;
+
+  const typingBox = document.getElementById('typing');
+  const nextBtn = document.getElementById('next-btn');
+  let i = 0;
+
+  function type() {
+    if (i <= text.length) {
+      typingBox.textContent = text.slice(0, i);
+      i++;
+      setTimeout(type, text[i-2] === '\n' ? 300 : 45);
+    } else {
+      nextBtn.style.display = 'inline-block';
+    }
+  }
+  type();
+
+  // --- CONTADORES ---
+  const counters = document.getElementById('counters');
+  function updateCounters() {
+    const now = new Date();
+    const diff = now - startDate;
+    const daysTogether = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const diffEvent = eventDate - now;
+    const eDays = Math.max(0, Math.floor(diffEvent / (1000 * 60 * 60 * 24)));
+    const eHours = Math.max(0, Math.floor((diffEvent / (1000 * 60 * 60)) % 24));
+    const eMinutes = Math.max(0, Math.floor((diffEvent / (1000 * 60)) % 60));
+    const eSeconds = Math.max(0, Math.floor((diffEvent / 1000) % 60));
+    counters.innerHTML =
+      `Llevamos  <b>${daysTogether}</b> días<br>` ;
+  }
+  updateCounters();
+  setInterval(updateCounters, 1000);
+
+  // --- MÚSICA ---
+  const btn = document.getElementById('music-btn');
+  const audio = document.getElementById('bg-music');
+  btn.onclick = () => {
+    if (audio.paused) {
+      audio.play();
+      btn.textContent = '🔊 Música';
+    } else {
+      audio.pause();
+      btn.textContent = '▶️ Música';
+    }
+  };
+
+  // --- Botón Siguiente ---
+  nextBtn.addEventListener('click', () => {
+    window.location.href = "index2.html";
+  });
+</script>
+</body>
+</html>
